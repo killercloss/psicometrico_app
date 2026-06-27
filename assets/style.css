@@ -251,3 +251,26 @@ textarea{
 .badge.low{
 	background:#fee2e2
 }
+
+.th-sort{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+}
+
+.sort-arrows{
+    display:flex;
+    flex-direction:column;
+    line-height:11px;
+}
+
+.sort-arrows a{
+    color:#2563eb;
+    text-decoration:none;
+    font-size:11px;
+}
+
+.sort-arrows a:hover{
+    color:#1d4ed8;
+}

@@ -25,6 +25,29 @@
                 $st=$pdo->prepare('SELECT intentos_post_finalizacion FROM aspirantes WHERE id=?'); $st->execute([$a['id']]); $n=$st->fetchColumn();
                 $msg='La prueba ya fue finalizada. Intentos de ingreso posteriores a la finalización: '.$n.'.';
             } 
+        elseif(!empty($a['inicio_examen_at']))
+            {
+                $st = $pdo->prepare('SELECT NOW() >= ? AS disponible');
+                $st->execute([$a['inicio_examen_at']]);
+                $disponible = (int)$st->fetchColumn();
+
+                if(!$disponible)
+                {
+                    $msg = 'La prueba estará disponible a partir de: '.date('d/m/Y H:i', strtotime($a['inicio_examen_at'])).' horas.';
+                }
+                else
+                {
+                    $_SESSION['aspirante_id']=$a['id'];
+                    $int=current_attempt($pdo,$a['id']);
+
+                    if(!$int)
+                    { 
+                        $pdo->prepare('INSERT INTO intentos (aspirante_id, estado) VALUES (?, "preparacion")')->execute([$a['id']]); 
+                    }
+
+                    redirect('preparacion.php');
+                }
+            }
         else 
             {
                 $_SESSION['aspirante_id']=$a['id'];
@@ -71,14 +94,6 @@
                 </p>
             </div>
         </div>
-        <?php
-            echo "PHP: " . date('Y-m-d H:i:s') . "<br>";
-
-$st = $pdo->query("SELECT NOW() AS mysql_now");
-$row = $st->fetch();
-
-echo "MySQL: " . $row['mysql_now'];
-exit;
-        ?>
+        
     </body>
 </html>
