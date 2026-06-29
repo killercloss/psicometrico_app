@@ -123,12 +123,11 @@
 				</div>
 			</div>
 			-->
-			<button>Descargar como PDF</button>
-			<button onclick="location.href='imprimir_pdf.php';">Descargar como PDF</button>
-			<button>Descargar como PDF</button>
-			<a href="exportar_csv.php" class="btn">
-    			Descargar como PDF
-			</a>
+			
+			<a class="btn" href="imprimir_pdf.php?id=<?=$r['id']?>" target="_blank">
+    Descargar como PDF
+</a>
+			
 		</div>
 	</body>
 </html>
