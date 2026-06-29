@@ -88,7 +88,6 @@
 						<th>Nivel</th>
 						<th>Tiempo</th>
 						<th>Interpretación</th>
-						<th>Fundamentación</th>
 					</tr>
 					
 					<?php 
@@ -110,22 +109,20 @@
 						<td>
 							<?=h($d['interpretacion'])?>
 						</td>
-						<td>
-							<?=h($d['fundamentacion'])?>
-						</td>
 					</tr>
 					<?php 
 					endforeach;
 					?>
 				</table>
 			</div>
+			<!--
 			<div class="card">
 				<h2>Carta de resultados</h2>
 				<div class="report">
 					<?=h($r['carta_resultados'])?>
 				</div>
 			</div>
-			
+			-->
 			<button>Descargar como PDF</button>
 			<button onclick="location.href='imprimir_pdf.php';">Descargar como PDF</button>
 			<button>Descargar como PDF</button>

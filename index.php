@@ -71,6 +71,10 @@
     <body>
         <div class="container">
             <div class="card">
+                <div class= "encabezado">
+                    <img style="width: 20%;" src="resources/uanl.png">
+                    <img style="width: 20%;" src="resources/5 FCFM.png">
+                </div>
                 <h1><?=APP_NAME?></h1>
                 <p>Acceso para aspirantes autorizados.</p>
                 <?php 

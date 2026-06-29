@@ -58,6 +58,8 @@
 		'programa' => 'maestria',
 		'autorizado' => 'autorizado',
 		'terminado' => 'terminado',
+		'fecha' => 'inicio_examen_at',
+		'hora' => 'inicio_examen_at',
 		'intentos' => 'intentos_post_finalizacion'
 	];
 
@@ -205,9 +207,9 @@
 					<th><?=sort_link('Correo', 'correo', $sort, $dir)?></th>
 					<th><?=sort_link('Programa', 'programa', $sort, $dir)?></th>
 					<th><?=sort_link('Autorizado', 'autorizado', $sort, $dir)?></th>
-					<th><?=sort_link('Terminado', 'terminado', $sort, $dir)?></th>
-					<th>Fecha inicio</th>
-					<th>Hora inicio</th>
+					<th><?=sort_link('Realizado', 'terminado', $sort, $dir)?></th>
+					<th><?=sort_link('Fecha inicio', 'fecha', $sort, $dir)?></th>
+					<th><?=sort_link('Hora inicio', 'hora', $sort, $dir)?></th>
 					<th><?=sort_link('Intentos tras terminar', 'intentos', $sort, $dir)?></th>
 					<th>Acciones</th>
 				</tr>

@@ -26,6 +26,8 @@
     $dim = $pdo->prepare('SELECT * FROM dimensiones WHERE id=?'); 
     $dim->execute([$dim_id]); 
     $dimension=$dim->fetch();
+    $opciones = array("Totalmente en desacuerdo", "En desacuerdo", "Neutral", "De acuerdo", "Totalmente de acuerdo");
+    $contador = 0;
     
     if(!$dimension)
         {
@@ -121,25 +123,36 @@
         <link rel="stylesheet" href="assets/style.css">
     </head>
     <body>
-        <div class="container">
-            <div class="card">
-                <h1>Dimensión <?=h($dim_id)?>: <?=h($dimension['nombre'])?></h1>
-                <p class="muted"><?=h($dimension['descripcion'])?></p>
-                <div class="alert warn">Tiempo restante: 
+        <div class="alert warn">Tiempo restante: 
                     <span class="timer" id="timer"><?=format_seconds($remaining)?></span>
                 </div>
+        <div class="container">
+
+            <div class="card">
+
+                <div class= "encabezado">
+                    <img style="width: 20%;" src="resources/uanl.png">
+                    <img style="width: 20%;" src="resources/5 FCFM.png">
+                </div>
+                <h1>Dimensión <?=h($dim_id)?>: <?=h($dimension['nombre'])?></h1>
+                <p class="muted"><?=h($dimension['descripcion'])?></p>
+                
                 <form method="post" id="examForm"><?php foreach($qs as $q):?>
                     <div class="question">
                         <b><?=h($q['numero'])?>. <?=h($q['texto'])?></b>
                         <div class="likert"><?php for($i=1;$i<=5;$i++):?>
-                        <label>
-                            <input type="radio" name="q_<?=$q['id']?>" value="<?=$i?>" required> <?=$i?>
+                        <label class="opcion">
+                            <input class="input" type="radio" name="q_<?=$q['id']?>" value="<?=$i?>" required> 
+                            <span class="numero"> <?=$i?> </span>
+                            <div class="texto"><?php echo $opciones[$contador]; $contador++;?></div>
                         </label>
+
                         <?php 
                             endfor;
+                            $contador = 0;
                         ?>
                     </div>
-                    <div class="small muted">1 Totalmente en desacuerdo · 5 Totalmente de acuerdo</div>
+                    
                     </div>
                 <?php 
                     endforeach;

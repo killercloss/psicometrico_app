@@ -25,6 +25,10 @@
 	<body>
 		<div class="container">
 			<div class="card">
+				<div class= "encabezado">
+                    <img style="width: 20%;" src="../resources/uanl.png">
+                    <img style="width: 20%;" src="../resources/5 FCFM.png">
+                </div>
 				<h1>Admin</h1>
 				<?php 
 					if($err):
