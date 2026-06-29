@@ -211,3 +211,6 @@ INSERT INTO interpretaciones_dimension (dimension_id,nivel,min_puntaje,max_punta
 (5,'Alto',45,60,'Refleja honestidad interpersonal, transparencia y disposición para asumir responsabilidad. Puede mantener relaciones basadas en confianza y respeto.','Bandura (1999): conductas prosociales y responsabilidad interpersonal favorecen cooperación y funcionamiento saludable.'),
 (5,'Medio',28,44,'Reconoce la importancia de honestidad, transparencia y responsabilidad; en algunas circunstancias podría justificar conductas orientadas al beneficio personal o minimizar reglas.','Bandura (1999): la desconexión moral permite justificar comportamientos inapropiados bajo beneficios percibidos o presión contextual.'),
 (5,'Bajo',12,27,'Puede presentar tendencia a justificar engaños, ocultamiento de información o conductas orientadas al beneficio personal, aun cuando afecten a otras personas o al entorno laboral.','Bandura (1999): mecanismos de desconexión moral justifican comportamientos normalmente considerados inapropiados.');
+
+ALTER TABLE aspirantes
+ADD inicio_examen_at DATETIME NULL AFTER maestria;
