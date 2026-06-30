@@ -12,6 +12,24 @@ use Dompdf\Options;
 
 $id = $_GET['id'] ?? null;
 
+
+function imageToBase64($ruta)
+{
+    if(!file_exists($ruta))
+    {
+        return '';
+    }
+
+    $tipo = pathinfo($ruta, PATHINFO_EXTENSION);
+
+    $datos = file_get_contents($ruta);
+
+    return 'data:image/'.$tipo.';base64,'.base64_encode($datos);
+}
+
+$logoUANL = imageToBase64(__DIR__.'/../resources/uanl.png');
+$logoFCFM = imageToBase64(__DIR__.'/../resources/5 FCFM.png');
+
 if(!$id){
     die('Reporte no especificado.');
 }
@@ -70,7 +88,6 @@ ob_start();
         background:#1F6FB6;
         color:white;
         padding:18px;
-        border-bottom:5px solid #FFA600;
         margin-bottom:20px;
     }
 
@@ -146,14 +163,58 @@ ob_start();
         color:#666;
         text-align:right;
     }
+
+    .encabezado{
+    margin-bottom: 10px;
+    background:#1F6FB6;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0px 30px;
+
+    border-bottom:5px solid #FFA600;
+
+    }
+
+    .encabezado img{
+
+    height:90px;
+
+    width:auto;
+
+}
+
+    .encabezado:nth-child(2){
+        padding-left: 200px;
+    }
+
+    .alineacion{
+        margin: 0px -158px;
+        margin-bottom: -20px;
+        font-family: DejaVu Sans, sans-serif;
+        font-size:16px;
+        font-weight:bold;
+        color: white;
+    }
 </style>
 </head>
 <body>
+
+                <div class= "encabezado">
+                    <pre class="alineacion">
+                        <img style="height: 85px;" src="<?=$logoUANL?>">          Reporte de Evaluación          <img style="" src="<?=$logoFCFM?>">
+                    </pre>
+                </div>
 
 <div class="header">
     <h1>Reporte individual</h1>
     <div>Sistema de Evaluación Psicométrica</div>
 </div>
+
 
 <div class="info">
     <b>Aspirante:</b>

@@ -127,6 +127,9 @@
 			<a class="btn" href="imprimir_pdf.php?id=<?=$r['id']?>" target="_blank">
     Descargar como PDF
 </a>
+<a class="btn secondary" href="exportar_excel.php?id=<?=$r['id']?>">
+    Descargar Excel
+</a>
 			
 		</div>
 	</body>
