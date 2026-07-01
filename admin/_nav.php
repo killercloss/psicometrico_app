@@ -8,7 +8,8 @@
 	<a class="<?= $pagina=='aspirantes.php' ? 'active' : '' ?>" href="aspirantes.php" title="Agregar, editar o eliminar aspirantes">Aspirantes</a>
 	<a class="<?= $pagina=='programas.php' ? 'active' : '' ?>" href="programas.php" title="Lista de maestrías y doctorados">Programas</a>
 	<a class="<?= $pagina=='dimensiones.php' ? 'active' : '' ?>" href="dimensiones.php" title="Dimensiones de psicométrico">Dimensiones</a>
-	<a class="<?= $pagina=='preguntas.php' ? 'active' : '' ?>" href="preguntas.php" title="Lista de preguntas para psicométrico">Preguntas</a>
+	<a class="<?= $pagina=='preguntas.php' ? 'active' : '' ?>" href="preguntas.php" title="Lista de preguntas para psicométrico">Preguntas de test</a>
+	<a class="<?= $pagina=='entrevista_banco.php' ? 'active' : '' ?>" href="entrevista_banco.php">Preguntas de entrevista</a>
 	<a class="<?= $pagina=='reportes.php' ? 'active' : '' ?>" href="reportes.php" title="Generar reportes">Reportes</a>
 	<a href="exportar_csv.php" title="Exportar pantalla en CSV">CSV</a>
 	<a href="logout.php" title="Cerrar sesión">Salir</a>

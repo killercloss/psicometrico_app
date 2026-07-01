@@ -113,6 +113,15 @@
     $questions = $pdo->prepare('SELECT * FROM preguntas WHERE dimension_id=? AND activa=1 ORDER BY numero'); 
     $questions->execute([$dim_id]); 
     $qs = $questions->fetchAll();
+
+    $st = $pdo->prepare('SELECT * FROM aspirantes WHERE id = ?');
+    $st->execute([$aspirante_id]);
+    $datos = $st->fetch(); 
+
+    if(!$datos) 
+    {
+        die('No encontrado');
+    }
 ?>
 
 <!doctype html>
@@ -132,12 +141,18 @@
 
                 <div class= "encabezado">
                     <img style="width: 20%;" src="resources/uanl.png">
+                    <p class="bienvenida">
+                        Departamento de Orientación Psicopedagógica<br>
+                        <?=h($datos['maestria'])?><br>
+                        Test Psicométrico Posgrado - <?=h($datos['nombres'])?>
+                    </p>
                     <img style="width: 20%;" src="resources/5 FCFM.png">
                 </div>
                 <h1>Dimensión <?=h($dim_id)?>: <?=h($dimension['nombre'])?></h1>
                 <p class="muted"><?=h($dimension['descripcion'])?></p>
                 
                 <form method="post" id="examForm"><?php foreach($qs as $q):?>
+                    <?=csrf_field()?>
                     <div class="question">
                         <b><?=h($q['numero'])?>. <?=h($q['texto'])?></b>
                         <div class="likert"><?php for($i=1;$i<=5;$i++):?>

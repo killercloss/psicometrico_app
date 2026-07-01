@@ -3,6 +3,7 @@
 	require_once __DIR__.'/../includes/db.php'; 
 	require_once __DIR__.'/../includes/functions.php'; 
 	require_admin();
+	csrf_check();
 
 	$id = $_GET['id']??null; 
 	$p=['nombre'=>'','tipo'=>'Maestría','activo'=>1];
@@ -45,6 +46,7 @@
 			<div class="card">
 				<h1><?= $id?'Editar':'Nuevo' ?> programa</h1>
 				<form method="post">
+					<?=csrf_field()?>
 					<label>Tipo</label>
 					<select name="tipo" required>
 						<option value="Maestría" <?=$p['tipo']==='Maestría'?'selected':''?>>Maestría</option>

@@ -1,10 +1,13 @@
 <?php 
 	session_start(); 
 	require_once __DIR__.'/../includes/config.php'; 
+	require_once __DIR__.'/../includes/functions.php';
+
 	$err=''; 
 
 	if($_SERVER['REQUEST_METHOD'] === 'POST')
 		{ 
+			csrf_check();
 			if(($_POST['user']??'') === ADMIN_USER && password_verify($_POST['pass'] ?? '', ADMIN_PASS))
 				{
 					$_SESSION['admin'] = true; 
@@ -40,6 +43,7 @@
 					endif;
 				?>
 				<form method="post">
+					<?=csrf_field()?>
 					<label>Usuario</label>
 					<input name="user">
 					<label>Contraseña</label>

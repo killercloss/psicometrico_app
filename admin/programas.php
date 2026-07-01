@@ -3,6 +3,7 @@
 	require_once __DIR__.'/../includes/db.php'; 
 	require_once __DIR__.'/../includes/functions.php'; 
 	require_admin();
+	csrf_check();
 
 	if(isset($_GET['del']))
 		{ 

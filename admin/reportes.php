@@ -4,6 +4,7 @@
 	require_once __DIR__.'/../includes/db.php'; 
 	require_once __DIR__.'/../includes/functions.php'; 
 	require_admin();
+	csrf_check();
 
 	$programas = $pdo->query('SELECT * FROM programas WHERE activo=1 ORDER BY tipo DESC, nombre ASC')->fetchAll();
 	$where=[];$params=[]; 

@@ -3,6 +3,7 @@
 	require_once __DIR__.'/../includes/db.php'; 
 	require_once __DIR__.'/../includes/functions.php'; 
 	require_admin();
+	csrf_check();
 
 	$id = $_GET['id'] ?? null; 
 
@@ -30,6 +31,7 @@
 
 	if($_SERVER['REQUEST_METHOD'] === 'POST')
 	{
+		$nuevo_codigo = trim($_POST['codigo_acceso'] ?? '');
 		$programa = trim($_POST['maestria']);
 
 		$fecha_nacimiento = !empty($_POST['fecha_nacimiento'])
@@ -42,7 +44,7 @@
 
 		$data = [
 			trim($_POST['folio_ceneval']),
-			trim($_POST['codigo_acceso']),
+			$codigo_hash,
 			trim($_POST['apellido_paterno']),
 			trim($_POST['apellido_materno']),
 			trim($_POST['nombres']),
@@ -55,39 +57,96 @@
 
 		if($id)
 		{
-			$pdo->prepare('
-				UPDATE aspirantes 
-				SET folio_ceneval=?,
-					codigo_acceso=?,
-					apellido_paterno=?,
-					apellido_materno=?,
-					nombres=?,
-					correo=?,
-					fecha_nacimiento=?,
-					maestria=?,
-					inicio_examen_at=?,
-					autorizado=? 
-				WHERE id=?
-			')->execute([...$data, $id]);
+		    if($nuevo_codigo !== '')
+		    {
+		        $codigo_hash = password_hash($nuevo_codigo, PASSWORD_DEFAULT);
+
+		        $pdo->prepare('
+		            UPDATE aspirantes 
+		            SET folio_ceneval=?,
+		                codigo_acceso=?,
+		                apellido_paterno=?,
+		                apellido_materno=?,
+		                nombres=?,
+		                correo=?,
+		                fecha_nacimiento=?,
+		                maestria=?,
+		                inicio_examen_at=?,
+		                autorizado=? 
+		            WHERE id=?
+		        ')->execute([
+		            trim($_POST['folio_ceneval']),
+		            $codigo_hash,
+		            trim($_POST['apellido_paterno']),
+		            trim($_POST['apellido_materno']),
+		            trim($_POST['nombres']),
+		            trim($_POST['correo']),
+		            $fecha_nacimiento,
+		            $programa,
+		            $inicio_examen_at,
+		            isset($_POST['autorizado']) ? 1 : 0,
+		            $id
+		        ]);
+		    }
+		    else
+		    {
+		        $pdo->prepare('
+		            UPDATE aspirantes 
+		            SET folio_ceneval=?,
+		                apellido_paterno=?,
+		                apellido_materno=?,
+		                nombres=?,
+		                correo=?,
+		                fecha_nacimiento=?,
+		                maestria=?,
+		                inicio_examen_at=?,
+		                autorizado=? 
+		            WHERE id=?
+		        ')->execute([
+		            trim($_POST['folio_ceneval']),
+		            trim($_POST['apellido_paterno']),
+		            trim($_POST['apellido_materno']),
+		            trim($_POST['nombres']),
+		            trim($_POST['correo']),
+		            $fecha_nacimiento,
+		            $programa,
+		            $inicio_examen_at,
+		            isset($_POST['autorizado']) ? 1 : 0,
+		            $id
+		        ]);
+		    }
 		}
 		else 
 		{
-			$pdo->prepare('
-				INSERT INTO aspirantes 
-				(
-					folio_ceneval,
-					codigo_acceso,
-					apellido_paterno,
-					apellido_materno,
-					nombres,
-					correo,
-					fecha_nacimiento,
-					maestria,
-					inicio_examen_at,
-					autorizado
-				) 
-				VALUES (?,?,?,?,?,?,?,?,?,?)
-			')->execute($data);
+		    $codigo_hash = password_hash($nuevo_codigo, PASSWORD_DEFAULT);
+
+		    $pdo->prepare('
+		        INSERT INTO aspirantes 
+		        (
+		            folio_ceneval,
+		            codigo_acceso,
+		            apellido_paterno,
+		            apellido_materno,
+		            nombres,
+		            correo,
+		            fecha_nacimiento,
+		            maestria,
+		            inicio_examen_at,
+		            autorizado
+		        ) 
+		        VALUES (?,?,?,?,?,?,?,?,?,?)
+		    ')->execute([
+		        trim($_POST['folio_ceneval']),
+		        $codigo_hash,
+		        trim($_POST['apellido_paterno']),
+		        trim($_POST['apellido_materno']),
+		        trim($_POST['nombres']),
+		        trim($_POST['correo']),
+		        $fecha_nacimiento,
+		        $programa,
+		        $inicio_examen_at,
+		        isset($_POST['autorizado']) ? 1 : 0
+		    ]);
 		} 
 
 		redirect('aspirantes.php');
@@ -114,11 +173,12 @@
 			<h1><?= $id ? 'Editar' : 'Nuevo' ?> aspirante</h1>
 
 			<form method="post">
+				<?=csrf_field()?>
 				<label>Folio CENEVAL</label>
 				<input name="folio_ceneval" value="<?=h($a['folio_ceneval'])?>" required>
 
-				<label>Código de acceso</label>
-				<input name="codigo_acceso" value="<?=h($a['codigo_acceso'])?>" required>
+				<label>Código de acceso <?= $id ? '(dejar vacío para no cambiar)' : '' ?></label>
+				<input  name="codigo_acceso" type="password" value="" <?= $id ? '' : 'required' ?>>
 
 				<label>Apellido paterno</label>
 				<input name="apellido_paterno" value="<?=h($a['apellido_paterno'])?>" required>

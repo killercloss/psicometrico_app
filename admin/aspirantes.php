@@ -4,11 +4,18 @@
 	require_once __DIR__.'/../includes/db.php'; 
 	require_once __DIR__.'/../includes/functions.php'; 
 	require_admin();
+	csrf_check();
 
-	if(isset($_GET['del']))
+	/*if(isset($_GET['del']))
 	{ 
 		$pdo->prepare('DELETE FROM aspirantes WHERE id=?')->execute([$_GET['del']]); 
 		redirect('aspirantes.php'); 
+	}*/
+
+	if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['del']))
+	{
+	    $pdo->prepare('DELETE FROM aspirantes WHERE id=?')->execute([(int)$_POST['del']]);
+	    redirect('aspirantes.php');
 	}
 
 	if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_entrevista']))
@@ -249,6 +256,7 @@
 						</td>
 						<td>
 							<form method="post" class="inline-form">
+								<?=csrf_field()?>
 								<input type="hidden" name="aspirante_id" value="<?=$a['id']?>">
 								<input 
 									type="datetime-local" 
@@ -260,7 +268,12 @@
 						<td><?=$a['intentos_post_finalizacion']?></td>
 						<td class="actions">
 							<a class="btn secondary" href="aspirante_form.php?id=<?=$a['id']?>">Editar</a>
-							<a class="btn danger" onclick="return confirm('¿Eliminar?')" href="aspirantes.php?del=<?=$a['id']?>">Eliminar</a>
+							<!--<a class="btn danger" onclick="return confirm('¿Eliminar?')" href="aspirantes.php?del=<?=$a['id']?>">Eliminar</a>-->
+							<form method="post" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
+								<?=csrf_field()?>
+							    <input type="hidden" name="del" value="<?=$a['id']?>">
+							    <button class="btn danger">Eliminar</button>
+							</form>
 						</td>
 					</tr>
 				<?php endforeach; ?>

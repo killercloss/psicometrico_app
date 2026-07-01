@@ -6,14 +6,19 @@
     
     if($_SERVER['REQUEST_METHOD'] === 'POST')
     {
+        csrf_check();
         $folio = trim($_POST['folio']??''); 
         $codigo = trim($_POST['codigo']??'');
-        $st = $pdo->prepare('SELECT * FROM aspirantes WHERE folio_ceneval=? AND codigo_acceso = ? LIMIT 1');
-        $st->execute([$folio,$codigo]); 
+        $st = $pdo->prepare('SELECT * FROM aspirantes WHERE folio_ceneval=? LIMIT 1');
+        $st->execute([$folio]); 
         $a = $st->fetch();
         if(!$a)
             { 
                 $msg='Folio o código incorrecto.'; 
+            }
+        elseif(!password_verify($codigo, $a['codigo_acceso']))
+            {
+                $msg = 'Folio o código incorrecto.';
             }
         elseif(!$a['autorizado'])
             { 
@@ -38,6 +43,7 @@
                 else
                 {
                     $_SESSION['aspirante_id']=$a['id'];
+                    password_verify($codigo, $a['codigo_acceso']);
                     $int=current_attempt($pdo,$a['id']);
 
                     if(!$int)
@@ -73,10 +79,12 @@
             <div class="card">
                 <div class= "encabezado">
                     <img style="width: 20%;" src="resources/uanl.png">
+                    <p class="bienvenida"> Departamento de Orientación Psicopedagógica<br><br>
+                    Bienvenido(a) </p>
                     <img style="width: 20%;" src="resources/5 FCFM.png">
                 </div>
                 <h1><?=APP_NAME?></h1>
-                <p>Acceso para aspirantes autorizados.</p>
+                <p>Acceso para aspirantes.</p>
                 <?php 
                     if($msg):
                 ?>
@@ -87,15 +95,13 @@
                     endif;
                 ?>
                 <form method="post">
+                    <?=csrf_field()?>
                     <label>Folio CENEVAL</label>
                     <input name="folio" required>
                     <label>Código de acceso</label>
-                    <input name="codigo" required>
+                    <input type="password" name="codigo" required>
                     <button>Ingresar</button>
                 </form>
-                <p>
-                    <a href="admin/login.php">Acceso administrativo</a>
-                </p>
             </div>
         </div>
         

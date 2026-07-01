@@ -3,6 +3,7 @@
 	require_once __DIR__.'/../includes/db.php'; 
 	require_once __DIR__.'/../includes/functions.php'; 
 	require_admin();
+	csrf_check();
 
 	$id = $_GET['id']??null; 
 	$d = ['nombre'=>'','descripcion'=>'','tiempo_minutos'=>5,'orden'=>1]; 
@@ -45,6 +46,7 @@
 			<div class="card">
 				<h1>Dimensión</h1>
 				<form method="post">
+					<?=csrf_field()?>
 					<label>Nombre</label>
 					<input name="nombre" value="<?=h($d['nombre'])?>" required>
 					<label>Descripción</label>

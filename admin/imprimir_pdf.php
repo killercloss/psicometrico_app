@@ -6,6 +6,7 @@ require_once __DIR__.'/../includes/functions.php';
 require_once __DIR__.'/../dompdf/autoload.inc.php';
 
 require_admin();
+csrf_check();
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -43,7 +44,9 @@ $st = $pdo->prepare("
         a.nombres,
         a.correo,
         a.maestria,
-        a.intentos_post_finalizacion
+        a.intentos_post_finalizacion,
+        a.observaciones,
+        a.fecha_nacimiento
     FROM resultados r
     JOIN aspirantes a ON a.id = r.aspirante_id
     WHERE r.id = ?
@@ -69,6 +72,19 @@ $st = $pdo->prepare("
 
 $st->execute([$id]);
 $dims = $st->fetchAll();
+
+$st = $pdo->prepare("
+    SELECT 
+        ep.*,
+        d.nombre AS dimension_nombre
+    FROM entrevista_preguntas_aplicadas ep
+    LEFT JOIN dimensiones d ON d.id = ep.dimension_id
+    WHERE ep.resultado_id = ?
+    ORDER BY ep.id ASC
+");
+
+$st->execute([$id]);
+$preguntasEntrevista = $st->fetchAll();
 
 ob_start();
 ?>
@@ -227,7 +243,10 @@ ob_start();
     <?=h($r['correo'])?><br>
 
     <b>Programa:</b>
-    <?=h($r['maestria'])?>
+    <?=h($r['maestria'])?><br>
+
+    <b>Edad:</b>
+    <?=calcular_edad($r['fecha_nacimiento'] ?? null)?>
 </div>
 
 <table class="stats">
@@ -277,6 +296,36 @@ ob_start();
         </tr>
     <?php endforeach; ?>
 </table>
+
+<h2>Preguntas realizadas durante la entrevista</h2>
+
+<?php if(!empty($preguntasEntrevista)): ?>
+    <table>
+        <tr>
+            <th>Dimensión</th>
+            <th>Pregunta</th>
+            <th>Respuesta / comentario</th>
+        </tr>
+
+        <?php foreach($preguntasEntrevista as $p): ?>
+            <tr>
+                <td><?=h($p['dimension_nombre'] ?? '—')?></td>
+                <td><?=h($p['pregunta_texto'])?></td>
+                <td><?=!empty($p['respuesta']) ? h($p['respuesta']) : '—'?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php else: ?>
+    <div class="general">
+        No se registraron preguntas de entrevista.
+    </div>
+<?php endif; ?>
+
+<h2>Observaciones generales</h2>
+
+<div class="general">
+    <?=!empty($r['observaciones']) ? nl2br(h($r['observaciones'])) : 'Sin observaciones registradas.'?>
+</div>
 
 <div class="footer">
     Generado el <?=date('d/m/Y H:i')?> hrs.

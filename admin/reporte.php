@@ -3,6 +3,7 @@
 	require_once __DIR__.'/../includes/db.php'; 
 	require_once __DIR__.'/../includes/functions.php'; 
 	require_admin();
+	csrf_check();
 
 	$id = $_GET['id'] ?? 0; 
 
@@ -29,6 +30,56 @@
 	$ds = $pdo->prepare('SELECT rd.*, d.nombre FROM resultados_dimension rd JOIN dimensiones d ON d.id = rd.dimension_id WHERE rd.resultado_id=? ORDER BY d.orden');
 	$ds->execute([$id]);
 	$dims = $ds->fetchAll();
+	
+	if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_entrevista_preguntas']))
+	{
+	    $aspirante_id = (int)$r['aspirante_id'];
+	    $resultado_id = (int)$r['id'];
+
+	    $pdo->prepare('DELETE FROM entrevista_preguntas_aplicadas WHERE resultado_id=?')
+	        ->execute([$resultado_id]);
+
+	    $preguntas = $_POST['pregunta_banco_id'] ?? [];
+	    $respuestas = $_POST['respuesta_entrevista'] ?? [];
+
+	    foreach($preguntas as $idx => $pregunta_banco_id)
+	    {
+	        $pregunta_banco_id = (int)$pregunta_banco_id;
+	        if($pregunta_banco_id <= 0) continue;
+
+	        $stp = $pdo->prepare('SELECT ebp.*, d.nombre AS dimension_nombre FROM entrevista_banco_preguntas ebp JOIN dimensiones d ON d.id=ebp.dimension_id WHERE ebp.id=? LIMIT 1');
+	        $stp->execute([$pregunta_banco_id]);
+	        $pb = $stp->fetch();
+
+	        if(!$pb) continue;
+
+	        $respuesta = trim($respuestas[$idx] ?? '');
+
+	        $pdo->prepare('INSERT INTO entrevista_preguntas_aplicadas (aspirante_id, resultado_id, pregunta_banco_id, dimension_id, pregunta_texto, respuesta) VALUES (?,?,?,?,?,?)')
+	            ->execute([$aspirante_id, $resultado_id, $pregunta_banco_id, $pb['dimension_id'], $pb['pregunta'], $respuesta]);
+	    }
+
+	    redirect('reporte.php?id='.$resultado_id);
+	}
+
+	$bancoEntrevista = $pdo->query('
+	    SELECT ebp.*, d.nombre AS dimension_nombre, d.orden AS dimension_orden
+	    FROM entrevista_banco_preguntas ebp
+	    JOIN dimensiones d ON d.id = ebp.dimension_id
+	    WHERE ebp.activa=1
+	    ORDER BY d.orden ASC, ebp.orden ASC, ebp.id ASC
+	')->fetchAll();
+
+	$aplicadasSt = $pdo->prepare('SELECT * FROM entrevista_preguntas_aplicadas WHERE resultado_id=? ORDER BY id ASC');
+	$aplicadasSt->execute([$id]);
+	$preguntasAplicadas = $aplicadasSt->fetchAll();
+
+	$prioridadDims = [];
+	foreach($dims as $d){
+	    if($d['nivel'] === 'Bajo' || $d['nivel'] === 'Medio'){
+	        $prioridadDims[] = $d;
+	    }
+	}
 ?>
 
 <!doctype html>
@@ -125,9 +176,115 @@
 			</div>
 
 			<div class="card">
+			    <h2>Preguntas de entrevista</h2>
+
+			    <?php if(!empty($prioridadDims)): ?>
+			        <div class="alert info">
+			            <b>Dimensiones sugeridas para profundizar:</b>
+			            <?php foreach($prioridadDims as $pd): ?>
+			                <span class="badge <?=$pd['nivel']=='Medio'?'mid':'low'?>"><?=h($pd['nombre'])?>: <?=h($pd['nivel'])?></span>
+			            <?php endforeach; ?>
+			        </div>
+			    <?php endif; ?>
+
+			    <form method="post" id="formPreguntasEntrevista">
+			    	<?=csrf_field()?>
+			        <div id="preguntasEntrevistaWrap">
+			            <?php if(!empty($preguntasAplicadas)): ?>
+			                <?php foreach($preguntasAplicadas as $idx => $pa): ?>
+			                    <div class="entrevista-item">
+			                        <label>Pregunta <?=($idx+1)?></label>
+			                        <select name="pregunta_banco_id[]" required>
+			                            <option value="">-- Selecciona una pregunta --</option>
+			                            <?php
+			                                $dimActual = null;
+			                                foreach($bancoEntrevista as $p):
+			                                    if($dimActual !== $p['dimension_id']):
+			                                        if($dimActual !== null) echo '</optgroup>';
+			                                        $dimActual = $p['dimension_id'];
+			                                        echo '<optgroup label="'.h($p['dimension_orden'].'. '.$p['dimension_nombre']).'">';
+			                                    endif;
+			                            ?>
+			                                <option value="<?=$p['id']?>" <?=$pa['pregunta_banco_id']==$p['id']?'selected':''?>><?=h($p['orden'].'. '.$p['pregunta'])?></option>
+			                            <?php endforeach; if($dimActual !== null) echo '</optgroup>'; ?>
+			                        </select>
+
+			                        <label>Respuesta / notas de entrevista</label>
+			                        <textarea name="respuesta_entrevista[]" rows="3"><?=h($pa['respuesta'])?></textarea>
+			                        <button type="button" class="btn danger quitar-pregunta">Quitar</button>
+			                    </div>
+			                <?php endforeach; ?>
+			            <?php endif; ?>
+			        </div>
+
+			        <button type="button" class="btn secondary" id="agregarPreguntaEntrevista">+ Agregar pregunta</button>
+			        <button type="submit" name="guardar_entrevista_preguntas" value="1">Guardar preguntas de entrevista</button>
+			    </form>
+			</div>
+
+			<script>
+			const bancoPreguntasHtml = `
+			    <option value="">-- Selecciona una pregunta --</option>
+			    <?php
+			        $dimActual = null;
+			        foreach($bancoEntrevista as $p):
+			            if($dimActual !== $p['dimension_id']):
+			                if($dimActual !== null) echo '</optgroup>';
+			                $dimActual = $p['dimension_id'];
+			                echo '<optgroup label="'.h($p['dimension_orden'].'. '.$p['dimension_nombre']).'">';
+			            endif;
+			    ?>
+			        <option value="<?=$p['id']?>"><?=h($p['orden'].'. '.$p['pregunta'])?></option>
+			    <?php endforeach; if($dimActual !== null) echo '</optgroup>'; ?>
+			`;
+
+			function renumerarPreguntasEntrevista(){
+			    document.querySelectorAll('.entrevista-item').forEach((item, index) => {
+			        const label = item.querySelector('label');
+			        if(label) label.textContent = 'Pregunta ' + (index + 1);
+			    });
+			}
+
+			function agregarPreguntaEntrevista(){
+			    const wrap = document.getElementById('preguntasEntrevistaWrap');
+			    const total = wrap.querySelectorAll('.entrevista-item').length;
+
+			    if(total >= 5){
+			        alert('Solo se pueden registrar hasta 5 preguntas de entrevista.');
+			        return;
+			    }
+
+			    const div = document.createElement('div');
+			    div.className = 'entrevista-item';
+			    div.innerHTML = `
+			        <label>Pregunta ${total + 1}</label>
+			        <select name="pregunta_banco_id[]" required>${bancoPreguntasHtml}</select>
+			        <label>Respuesta / notas de entrevista</label>
+			        <textarea name="respuesta_entrevista[]" rows="3"></textarea>
+			        <button type="button" class="btn danger quitar-pregunta">Quitar</button>
+			    `;
+			    wrap.appendChild(div);
+			}
+
+			document.getElementById('agregarPreguntaEntrevista').addEventListener('click', agregarPreguntaEntrevista);
+
+			document.addEventListener('click', function(e){
+			    if(e.target.classList.contains('quitar-pregunta')){
+			        e.target.closest('.entrevista-item').remove();
+			        renumerarPreguntasEntrevista();
+			    }
+			});
+
+			if(document.querySelectorAll('.entrevista-item').length === 0){
+			    agregarPreguntaEntrevista();
+			}
+			</script>
+			
+			<div class="card">
 				<h2>Comentarios / Observaciones de entrevista</h2>
 
 				<form method="post">
+					<?=csrf_field()?>
 					<input type="hidden" name="aspirante_id" value="<?=$r['aspirante_id']?>">
 
 					<textarea name="observaciones" rows="7" placeholder="Escriba aquí observaciones del entrevistador...">

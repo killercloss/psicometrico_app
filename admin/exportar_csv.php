@@ -3,6 +3,7 @@
 	require_once __DIR__.'/../includes/db.php'; 
 	require_once __DIR__.'/../includes/functions.php'; 
 	require_admin();
+	csrf_check();
 
 	header('Content-Type: text/xslx; charset=utf-8'); 
 	header('Content-Disposition: attachment; filename=resultados_psicometricos.csv');
