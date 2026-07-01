@@ -34,4 +34,14 @@ function format_seconds($seconds){
     $s=$seconds%60;
     return sprintf('%02d:%02d', $m, $s);
 }
+function calcular_edad($fecha){
+    if(empty($fecha)) return '—';
+    try{
+        $nac = new DateTime($fecha);
+        $hoy = new DateTime();
+        return $hoy->diff($nac)->y;
+    }catch(Exception $e){
+        return '—';
+    }
+}
 ?>

@@ -214,3 +214,8 @@ INSERT INTO interpretaciones_dimension (dimension_id,nivel,min_puntaje,max_punta
 
 ALTER TABLE aspirantes
 ADD inicio_examen_at DATETIME NULL AFTER maestria;
+
+ALTER TABLE aspirantes
+ADD fecha_nacimiento DATE NULL AFTER correo,
+ADD entrevista_at DATETIME NULL AFTER inicio_examen_at,
+ADD observaciones TEXT NULL;

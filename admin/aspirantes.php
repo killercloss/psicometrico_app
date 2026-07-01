@@ -11,6 +11,20 @@
 		redirect('aspirantes.php'); 
 	}
 
+	if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_entrevista']))
+	{
+		$id = (int)($_POST['aspirante_id'] ?? 0);
+
+		$entrevista_at = !empty($_POST['entrevista_at'])
+			? str_replace('T', ' ', $_POST['entrevista_at']).':00'
+			: null;
+
+		$pdo->prepare('UPDATE aspirantes SET entrevista_at=? WHERE id=?')
+			->execute([$entrevista_at, $id]);
+
+		redirect('aspirantes.php');
+	}
+
 	$programas = $pdo->query('SELECT * FROM programas WHERE activo=1 ORDER BY tipo DESC, nombre ASC')->fetchAll();
 
 	$where = [];
@@ -55,11 +69,13 @@
 		'folio' => 'folio_ceneval',
 		'nombre' => 'apellido_paterno, apellido_materno, nombres',
 		'correo' => 'correo',
+		'edad' => 'fecha_nacimiento',
 		'programa' => 'maestria',
 		'autorizado' => 'autorizado',
 		'terminado' => 'terminado',
 		'fecha' => 'inicio_examen_at',
 		'hora' => 'inicio_examen_at',
+		'entrevista' => 'entrevista_at',
 		'intentos' => 'intentos_post_finalizacion'
 	];
 
@@ -205,11 +221,13 @@
 					<th><?=sort_link('Folio', 'folio', $sort, $dir)?></th>
 					<th><?=sort_link('Nombre', 'nombre', $sort, $dir)?></th>
 					<th><?=sort_link('Correo', 'correo', $sort, $dir)?></th>
+					<th><?=sort_link('Edad', 'edad', $sort, $dir)?></th>
 					<th><?=sort_link('Programa', 'programa', $sort, $dir)?></th>
 					<th><?=sort_link('Autorizado', 'autorizado', $sort, $dir)?></th>
 					<th><?=sort_link('Realizado', 'terminado', $sort, $dir)?></th>
 					<th><?=sort_link('Fecha inicio', 'fecha', $sort, $dir)?></th>
 					<th><?=sort_link('Hora inicio', 'hora', $sort, $dir)?></th>
+					<th><?=sort_link('Entrevista', 'entrevista', $sort, $dir)?></th>
 					<th><?=sort_link('Intentos tras terminar', 'intentos', $sort, $dir)?></th>
 					<th>Acciones</th>
 				</tr>
@@ -219,6 +237,7 @@
 						<td><?=h($a['folio_ceneval'])?></td>
 						<td><?=h($a['apellido_paterno'].' '.$a['apellido_materno'].' '.$a['nombres'])?></td>
 						<td><?=h($a['correo'])?></td>
+						<td><?=calcular_edad($a['fecha_nacimiento'] ?? null)?></td>
 						<td><?=h($a['maestria'])?></td>
 						<td><?=$a['autorizado']?'Sí':'No'?></td>
 						<td><?=$a['terminado']?'Sí':'No'?></td>
@@ -227,6 +246,16 @@
 						</td>
 						<td>
 							<?=!empty($a['inicio_examen_at']) ? h(date('H:i', strtotime($a['inicio_examen_at']))) : '—'?>
+						</td>
+						<td>
+							<form method="post" class="inline-form">
+								<input type="hidden" name="aspirante_id" value="<?=$a['id']?>">
+								<input 
+									type="datetime-local" 
+									name="entrevista_at"
+									value="<?=!empty($a['entrevista_at']) ? h(date('Y-m-d\TH:i', strtotime($a['entrevista_at']))) : ''?>">
+								<button type="submit" name="guardar_entrevista" value="1">Guardar</button>
+							</form>
 						</td>
 						<td><?=$a['intentos_post_finalizacion']?></td>
 						<td class="actions">
@@ -238,7 +267,7 @@
 
 				<?php if(empty($rows)): ?>
 					<tr>
-						<td colspan="8">No se encontraron aspirantes con esos filtros.</td>
+						<td colspan="12">No se encontraron aspirantes con esos filtros.</td>
 					</tr>
 				<?php endif; ?>
 			</table>

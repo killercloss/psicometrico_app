@@ -4,17 +4,19 @@
 	require_once __DIR__.'/../includes/functions.php'; 
 	require_admin();
 
-	$id = $_GET['id']??null; 
+	$id = $_GET['id'] ?? null; 
+
 	$a = [
-		'folio_ceneval'=>'',
-		'codigo_acceso'=>'',
-		'apellido_paterno'=>'',
-		'apellido_materno'=>'',
-		'nombres'=>'',
-		'correo'=>'',
-		'maestria'=>'',
-		'inicio_examen_at'=>'',
-		'autorizado'=>1
+		'folio_ceneval' => '',
+		'codigo_acceso' => '',
+		'apellido_paterno' => '',
+		'apellido_materno' => '',
+		'nombres' => '',
+		'correo' => '',
+		'fecha_nacimiento' => '',
+		'maestria' => '',
+		'inicio_examen_at' => '',
+		'autorizado' => 1
 	];
 
 	$programas = $pdo->query('SELECT * FROM programas WHERE activo=1 ORDER BY tipo DESC, nombre ASC')->fetchAll();
@@ -29,6 +31,11 @@
 	if($_SERVER['REQUEST_METHOD'] === 'POST')
 	{
 		$programa = trim($_POST['maestria']);
+
+		$fecha_nacimiento = !empty($_POST['fecha_nacimiento'])
+			? $_POST['fecha_nacimiento']
+			: null;
+
 		$inicio_examen_at = !empty($_POST['inicio_examen_at'])
 			? str_replace('T', ' ', $_POST['inicio_examen_at']).':00'
 			: null;
@@ -40,6 +47,7 @@
 			trim($_POST['apellido_materno']),
 			trim($_POST['nombres']),
 			trim($_POST['correo']),
+			$fecha_nacimiento,
 			$programa,
 			$inicio_examen_at,
 			isset($_POST['autorizado']) ? 1 : 0
@@ -55,18 +63,30 @@
 					apellido_materno=?,
 					nombres=?,
 					correo=?,
+					fecha_nacimiento=?,
 					maestria=?,
 					inicio_examen_at=?,
 					autorizado=? 
 				WHERE id=?
-			')->execute([...$data,$id]);
+			')->execute([...$data, $id]);
 		}
 		else 
 		{
 			$pdo->prepare('
 				INSERT INTO aspirantes 
-				(folio_ceneval,codigo_acceso,apellido_paterno,apellido_materno,nombres,correo,maestria,inicio_examen_at,autorizado) 
-				VALUES (?,?,?,?,?,?,?,?,?)
+				(
+					folio_ceneval,
+					codigo_acceso,
+					apellido_paterno,
+					apellido_materno,
+					nombres,
+					correo,
+					fecha_nacimiento,
+					maestria,
+					inicio_examen_at,
+					autorizado
+				) 
+				VALUES (?,?,?,?,?,?,?,?,?,?)
 			')->execute($data);
 		} 
 
@@ -91,7 +111,7 @@
 
 	<div class="container">
 		<div class="card">
-			<h1><?= $id?'Editar':'Nuevo' ?> aspirante</h1>
+			<h1><?= $id ? 'Editar' : 'Nuevo' ?> aspirante</h1>
 
 			<form method="post">
 				<label>Folio CENEVAL</label>
@@ -111,6 +131,9 @@
 
 				<label>Correo</label>
 				<input name="correo" type="email" value="<?=h($a['correo'])?>">
+
+				<label>Fecha de nacimiento</label>
+				<input type="date" name="fecha_nacimiento" value="<?=h($a['fecha_nacimiento'] ?? '')?>">
 
 				<label>Programa al que intenta ingresar</label>
 				<select name="maestria" required>
