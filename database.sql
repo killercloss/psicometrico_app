@@ -267,3 +267,7 @@ INSERT INTO entrevista_banco_preguntas (dimension_id, pregunta, activa, orden) V
 (5, '¿Qué haces cuando consideras que una regla o procedimiento es injusto o innecesario?', 1, 3),
 (5, '¿Crees que existen situaciones en las que ocultar información puede estar justificado? ¿Por qué?', 1, 4),
 (5, 'Cuando tus intereses personales entran en conflicto con las necesidades de un grupo, ¿cómo manejas esa situación?', 1, 5);
+
+ALTER TABLE aspirantes
+ADD examen_correo_enviado_at DATETIME NULL,
+ADD entrevista_correo_enviado_at DATETIME NULL;

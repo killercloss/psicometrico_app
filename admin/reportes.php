@@ -35,6 +35,11 @@
 		<?php 
 			include '_nav.php';
 		?>
+		<div class= "encabezadoDash">
+        <p class="dashTitle"> Panel de Control - Generación de reportes
+        	<br>Departamento de Orientación Psicopedagógica<br>
+        Bienvenido(a) </p>
+    </div>
 		<div class="container">
 			<h1>Reportes</h1>
 			<div class="card">

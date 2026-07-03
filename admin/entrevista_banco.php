@@ -59,7 +59,11 @@ $rows = $pdo->query('
 </head>
 <body>
     <?php include '_nav.php'; ?>
-
+    <div class= "encabezadoDash">
+        <p class="dashTitle"> Panel de Control - Creación y edición de preguntas para entrevista
+            <br>Departamento de Orientación Psicopedagógica<br>
+        Bienvenido(a) </p>
+    </div>
     <div class="container">
         <h1>Preguntas de entrevista</h1>
 
@@ -102,7 +106,7 @@ $rows = $pdo->query('
             </form>
         </div>
 
-        <div class="card">
+        <div class="card2">
             <h2>Banco actual</h2>
             <div class="table-wrapper">
                 <table class="table">

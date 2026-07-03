@@ -149,11 +149,16 @@
 <body>
 
 	<?php include '_nav.php'; ?>
-
+	<div class= "encabezadoDash">
+        <p class="dashTitle"> Panel de Control - Resumen de aspirantes
+        	<br>Departamento de Orientación Psicopedagógica<br>
+        Bienvenido(a) </p>
+    </div>
 	<div class="container">
 		<h1>Aspirantes</h1>
 
 		<div class="card">
+
 			<form method="get" class="grid">
 				<div>
 					<label>Folio</label>
@@ -230,12 +235,14 @@
 					<th><?=sort_link('Correo', 'correo', $sort, $dir)?></th>
 					<th><?=sort_link('Edad', 'edad', $sort, $dir)?></th>
 					<th><?=sort_link('Programa', 'programa', $sort, $dir)?></th>
-					<th><?=sort_link('Autorizado', 'autorizado', $sort, $dir)?></th>
-					<th><?=sort_link('Realizado', 'terminado', $sort, $dir)?></th>
+					<th><?=sort_link('Acceso', 'autorizado', $sort, $dir)?></th>
+					<th><?=sort_link('Examen acabado', 'terminado', $sort, $dir)?></th>
 					<th><?=sort_link('Fecha inicio', 'fecha', $sort, $dir)?></th>
 					<th><?=sort_link('Hora inicio', 'hora', $sort, $dir)?></th>
 					<th><?=sort_link('Entrevista', 'entrevista', $sort, $dir)?></th>
 					<th><?=sort_link('Intentos tras terminar', 'intentos', $sort, $dir)?></th>
+					<th>Correo examen</th>
+					<th>Correo entrevista</th>
 					<th>Acciones</th>
 				</tr>
 				
@@ -266,6 +273,13 @@
 							</form>
 						</td>
 						<td><?=$a['intentos_post_finalizacion']?></td>
+						<td>
+						    <?=!empty($a['examen_correo_enviado_at']) ? h(date('d/m/Y H:i', strtotime($a['examen_correo_enviado_at']))) : '—'?>
+						</td>
+
+						<td>
+						    <?=!empty($a['entrevista_correo_enviado_at']) ? h(date('d/m/Y H:i', strtotime($a['entrevista_correo_enviado_at']))) : '—'?>
+						</td>
 						<td class="actions">
 							<a class="btn secondary" href="aspirante_form.php?id=<?=$a['id']?>">Editar</a>
 							<!--<a class="btn danger" onclick="return confirm('¿Eliminar?')" href="aspirantes.php?del=<?=$a['id']?>">Eliminar</a>-->
@@ -274,6 +288,30 @@
 							    <input type="hidden" name="del" value="<?=$a['id']?>">
 							    <button class="btn danger">Eliminar</button>
 							</form>
+							<br>
+							<?php if(empty($a['examen_correo_enviado_at'])): ?>
+							    <a class="btn secondary"
+							       href="correo.php?id=<?=$a['id']?>&tipo=examen">
+							        ✉ examen
+							    </a>
+							<?php else: ?>
+							    <button class="btn secondary"
+							            onclick="alert('Correo de examen ya fue preparado/enviado. Revisar tabla.')">
+							        ✉ examen
+							    </button>
+							<?php endif; ?>
+
+							<?php if(empty($a['entrevista_correo_enviado_at'])): ?>
+							    <a class="btn secondary"
+							       href="correo.php?id=<?=$a['id']?>&tipo=entrevista">
+							        ✉ entrevista
+							    </a>
+							<?php else: ?>
+							    <button class="btn secondary"
+							            onclick="alert('Correo de entrevista ya fue preparado/enviado. Revisar tabla.')">
+							        ✉ entrevista
+							    </button>
+							<?php endif; ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>

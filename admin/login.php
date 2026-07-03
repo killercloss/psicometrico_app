@@ -30,9 +30,11 @@
 			<div class="card">
 				<div class= "encabezado">
                     <img style="width: 20%;" src="../resources/uanl.png">
+                    <p class="bienvenida"> Departamento de Orientación Psicopedagógica<br><br>
+                    Bienvenido(a) </p>
                     <img style="width: 20%;" src="../resources/5 FCFM.png">
                 </div>
-				<h1>Admin</h1>
+				<h1>Acceso Administrativo</h1>
 				<?php 
 					if($err):
 				?>
@@ -45,9 +47,10 @@
 				<form method="post">
 					<?=csrf_field()?>
 					<label>Usuario</label>
-					<input name="user">
+					<input class="loginInput" name="user">
 					<label>Contraseña</label>
-					<input type="password" name="pass">
+					<input class="loginInput" type="password" name="pass">
+					<br>
 					<button>Entrar</button>
 				</form>
 			</div>

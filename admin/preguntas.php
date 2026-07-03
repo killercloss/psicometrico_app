@@ -25,6 +25,11 @@
 		<?php 
 			include '_nav.php';
 		?>
+		<div class= "encabezadoDash">
+        <p class="dashTitle"> Panel de Control - Creación y edición de preguntas
+        	<br>Departamento de Orientación Psicopedagógica<br>
+        Bienvenido(a) </p>
+    </div>
 		<div class="container">
 			<h1>Preguntas</h1>
 			<a class="btn" href="pregunta_form.php">Nueva pregunta</a>

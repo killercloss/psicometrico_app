@@ -25,6 +25,11 @@
 		<?php 
 			include '_nav.php';
 		?>
+		<div class= "encabezadoDash">
+        <p class="dashTitle"> Panel de Control - Vista de Oferta Educativa
+        	<br>Departamento de Orientación Psicopedagógica<br>
+        Bienvenido(a) </p>
+    </div>
 		<div class="container">
 			<h1>Maestrías y doctorados</h1>
 			<a class="btn" href="programa_form.php">Nuevo programa</a>

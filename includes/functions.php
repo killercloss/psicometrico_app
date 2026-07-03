@@ -63,4 +63,60 @@ function csrf_check(){
         die('Token CSRF inválido.');
     }
 }
+
+function mailto_examen($aspirante)
+{
+    $correo = $aspirante['correo'] ?? '';
+    $nombre = trim(($aspirante['nombres'] ?? '').' '.($aspirante['apellido_paterno'] ?? '').' '.($aspirante['apellido_materno'] ?? ''));
+    $fecha = !empty($aspirante['inicio_examen_at']) ? date('d/m/Y', strtotime($aspirante['inicio_examen_at'])) : 'pendiente';
+    $hora = !empty($aspirante['inicio_examen_at']) ? date('H:i', strtotime($aspirante['inicio_examen_at'])) : 'pendiente';
+
+    $asunto = rawurlencode('Fecha y horario de tu test psicométrico');
+
+    $cuerpo = rawurlencode(
+"Estimado(a) $nombre:
+
+Se te informa que tu test psicométrico ha sido programado.
+
+Fecha: $fecha
+Hora: $hora hrs.
+Folio CENEVAL: ".($aspirante['folio_ceneval'] ?? '')."
+Programa: ".($aspirante['maestria'] ?? '')."
+
+Te pedimos ingresar al sistema en la fecha y horario indicados.
+
+Atentamente,
+Departamento de Orientación Psicopedagógica"
+    );
+
+    return "mailto:$correo?subject=$asunto&body=$cuerpo";
+}
+
+function mailto_entrevista($aspirante)
+{
+    $correo = $aspirante['correo'] ?? '';
+    $nombre = trim(($aspirante['nombres'] ?? '').' '.($aspirante['apellido_paterno'] ?? '').' '.($aspirante['apellido_materno'] ?? ''));
+    $fecha = !empty($aspirante['entrevista_at']) ? date('d/m/Y', strtotime($aspirante['entrevista_at'])) : 'pendiente';
+    $hora = !empty($aspirante['entrevista_at']) ? date('H:i', strtotime($aspirante['entrevista_at'])) : 'pendiente';
+
+    $asunto = rawurlencode('Fecha y horario de tu entrevista');
+
+    $cuerpo = rawurlencode(
+"Estimado(a) $nombre:
+
+Se te informa que tu entrevista para revisión de resultados ha sido programada.
+
+Fecha: $fecha
+Hora: $hora hrs.
+Folio CENEVAL: ".($aspirante['folio_ceneval'] ?? '')."
+Programa: ".($aspirante['maestria'] ?? '')."
+
+Favor de presentarte puntualmente en la fecha y horario indicados.
+
+Atentamente,
+Departamento de Orientación Psicopedagógica"
+    );
+
+    return "mailto:$correo?subject=$asunto&body=$cuerpo";
+}
 ?>

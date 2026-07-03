@@ -97,9 +97,10 @@
                 <form method="post">
                     <?=csrf_field()?>
                     <label>Folio CENEVAL</label>
-                    <input name="folio" required>
+                    <input class="loginInput" name="folio" required>
                     <label>Código de acceso</label>
-                    <input type="password" name="codigo" required>
+                    <input class="loginInput" type="password" name="codigo" required>
+                    <br>
                     <button>Ingresar</button>
                 </form>
             </div>

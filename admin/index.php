@@ -23,6 +23,11 @@
 		<?php 
 			include '_nav.php';
 		?>
+		<div class= "encabezadoDash">
+        <p class="dashTitle"> Panel de Control - Resumen General
+        	<br>Departamento de Orientación Psicopedagógica<br>
+        Bienvenido(a) </p>
+    </div>
 		<div class="container">
 			<h1>Dashboard</h1>
 			<div class="grid">

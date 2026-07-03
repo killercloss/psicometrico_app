@@ -24,6 +24,11 @@
 		<?php 
 			include '_nav.php';
 		?>
+		<div class= "encabezadoDash">
+        <p class="dashTitle"> Panel de Control - Creación y edición de dimensiones
+        	<br>Departamento de Orientación Psicopedagógica<br>
+        Bienvenido(a) </p>
+    </div>
 		<div class="container">
 			<h1>Dimensiones</h1>
 			<a class="btn" href="dimension_form.php">Nueva dimensión</a>
