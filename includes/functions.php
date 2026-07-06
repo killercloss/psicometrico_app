@@ -63,7 +63,30 @@ function csrf_check(){
         die('Token CSRF inválido.');
     }
 }
+function texto_mailto($texto)
+{
+    $texto = str_replace("á","\341",$texto);
+    $texto = str_replace("é","\351",$texto);
+    $texto = str_replace("í","\355",$texto);
+    $texto = str_replace("ó","\363",$texto);
+    $texto = str_replace("ú","\372",$texto);
 
+    $texto = str_replace("Á","\301",$texto);
+    $texto = str_replace("É","\311",$texto);
+    $texto = str_replace("Í","\315",$texto);
+    $texto = str_replace("Ó","\323",$texto);
+    $texto = str_replace("Ú","\332",$texto);
+
+    $texto = str_replace("ñ", "\361", $texto);
+    $texto = str_replace("Ñ", "\321", $texto);
+    /*$convertido = iconv(
+        'UTF-8',
+        'Windows-1252//TRANSLIT',
+        $texto
+    );*/
+
+    return $texto;
+}
 function mailto_examen($aspirante)
 {
     $correo = $aspirante['correo'] ?? '';
@@ -71,22 +94,25 @@ function mailto_examen($aspirante)
     $fecha = !empty($aspirante['inicio_examen_at']) ? date('d/m/Y', strtotime($aspirante['inicio_examen_at'])) : 'pendiente';
     $hora = !empty($aspirante['inicio_examen_at']) ? date('H:i', strtotime($aspirante['inicio_examen_at'])) : 'pendiente';
 
-    $asunto = rawurlencode('Fecha y horario de tu test psicométrico');
+    $nombre = texto_mailto($nombre);
+    $programa = texto_mailto($aspirante['maestria']);
+
+    $asunto = rawurlencode("Fecha y horario de tu test psicom\351trico");
 
     $cuerpo = rawurlencode(
 "Estimado(a) $nombre:
 
-Se te informa que tu test psicométrico ha sido programado.
+Se te informa que tu test psicom\351trico ha sido programado.
 
 Fecha: $fecha
 Hora: $hora hrs.
 Folio CENEVAL: ".($aspirante['folio_ceneval'] ?? '')."
-Programa: ".($aspirante['maestria'] ?? '')."
+Programa: ".($programa ?? '')."
 
 Te pedimos ingresar al sistema en la fecha y horario indicados.
 
 Atentamente,
-Departamento de Orientación Psicopedagógica"
+Departamento de Orientaci\363n Psicopedag\363gica"
     );
 
     return "mailto:$correo?subject=$asunto&body=$cuerpo";
@@ -99,24 +125,32 @@ function mailto_entrevista($aspirante)
     $fecha = !empty($aspirante['entrevista_at']) ? date('d/m/Y', strtotime($aspirante['entrevista_at'])) : 'pendiente';
     $hora = !empty($aspirante['entrevista_at']) ? date('H:i', strtotime($aspirante['entrevista_at'])) : 'pendiente';
 
+    $nombre = texto_mailto($nombre);
+    $programa = texto_mailto($aspirante['maestria']);
+
     $asunto = rawurlencode('Fecha y horario de tu entrevista');
 
     $cuerpo = rawurlencode(
 "Estimado(a) $nombre:
 
-Se te informa que tu entrevista para revisión de resultados ha sido programada.
+Se te informa que tu entrevista para revisi\363n de resultados ha sido programada.
 
 Fecha: $fecha
 Hora: $hora hrs.
 Folio CENEVAL: ".($aspirante['folio_ceneval'] ?? '')."
-Programa: ".($aspirante['maestria'] ?? '')."
+Programa: ".($programa ?? '')."
 
 Favor de presentarte puntualmente en la fecha y horario indicados.
 
 Atentamente,
-Departamento de Orientación Psicopedagógica"
+Departamento de Orientaci\363n Psicopedag\363gica"
     );
 
     return "mailto:$correo?subject=$asunto&body=$cuerpo";
 }
+//341-á
+//351-é
+//355-í
+//363-ó
+//372-ú
 ?>

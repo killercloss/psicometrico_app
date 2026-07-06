@@ -265,6 +265,7 @@
 								<?=csrf_field()?>
 								<input type="hidden" name="aspirante_id" value="<?=$a['id']?>">
 								<input 
+									class="fecha_entrevista"
 									type="datetime-local" 
 									name="entrevista_at"
 									value="<?=!empty($a['entrevista_at']) ? h(date('Y-m-d\TH:i', strtotime($a['entrevista_at']))) : ''?>">
@@ -296,7 +297,13 @@
 							    </a>
 							<?php else: ?>
 							    <button class="btn secondary correo"
-							            onclick="alert('Correo de examen ya fue preparado/enviado. Revisar tabla.')">
+							            onclick="if(confirm('Correo de examen ya fue preparado/enviado. ¿Deseas reenviar?.') == false)
+									        { 
+									            window.location='aspirantes.php';
+									        }
+									        else{
+									        	window.location='correo.php?id=<?=$a['id']?>&tipo=examen';
+									        }">
 							        ✉<br>
 							        examen
 							    </button>
@@ -310,7 +317,13 @@
 							    </a>
 							<?php else: ?>
 							    <button class="btn secondary correo"
-							            onclick="alert('Correo de entrevista ya fue preparado/enviado. Revisar tabla.')">
+							            onclick="if(confirm('Correo de entrevista ya fue preparado/enviado. ¿Deseas reenviar?.') == false)
+									        { 
+									            window.location='aspirantes.php'
+									        }
+									        else{
+									        	window.location='correo.php?id=<?=$a['id']?>&tipo=entrevista';
+									        }">
 							        ✉<br>
 							        entrevista
 							    </button>

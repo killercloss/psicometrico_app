@@ -284,9 +284,9 @@ button:hover,
 	color:var(--danger)
 }
 
-input[type="datetime-local"] {
+/*input[type="datetime-local"]*/
+.fecha_entrevista {
      width: 40px;
-     /* More styles here */
 }
 
 .question{
