@@ -36,42 +36,51 @@ body{
 
 .container{
 	max-width: 50%;
-    min-width: 30%;
 	margin:28px auto;
 	/*margin-left: 270px;*/
 	padding:20px;
 	/*padding:0 16px*/
-
 	align-items: center;
 	text-align: center;
 }
 
 .loginInput{
-	max-width: 80%;
-	min-width: 30%;
+	width: 300px !important;
 }
 
 .card{
-	background:var(--card);
+	/*background:var(--card);
 	border-top:4px solid var(--fcfm-gold);
 
 	border:1px solid var(--border);
 	border-radius:14px;
 	padding:22px;
 	margin-bottom:18px;
-	box-shadow:0 6px 18px #0000000d
-}
+	box-shadow:0 6px 18px #0000000d*/
 
-.card2{
 	background:var(--card);
-	border-top:4px solid var(--fcfm-gold);
-
 	border:1px solid var(--border);
 	border-radius:14px;
+	padding:22px;
+	margin-bottom:18px;
+	box-shadow:0 6px 18px #0000000d;
+}
+
+.cardBanco{
 	padding:22px;
 	margin-bottom:18px;
 	box-shadow:0 6px 18px #0000000d
 	max-width: 80%;
+}
+
+.cardAspirantes{
+	background:var(--card);
+	border:1px solid var(--border);
+	border-radius:14px;
+	padding:22px;
+	margin-bottom:18px;
+	margin: 0 -150px;
+	box-shadow:0 6px 18px #0000000d
 }
 
 .logos{
@@ -153,7 +162,7 @@ input,select,textarea{
 }
 
 textarea{
-	min-height:90px
+	min-height:100px
 }
 
 .btn,button{
@@ -170,11 +179,16 @@ textarea{
 
 .btn.secondary{
 	background:#6b7280;
+	font-size: 14px;
+}
 
+.btn.secondary.correo{
+	text-align: center;
 }
 
 .btn.danger{
-	background:var(--danger)
+	background:var(--danger);
+	font-size: 14px;
 }
 
 .btn.light{
@@ -216,7 +230,7 @@ button:hover,
 
 .grid{
 	display:grid;
-	grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+	grid-template-columns:repeat(auto-fit,minmax(20px,1fr));
 	gap:12px
 }
 
@@ -234,12 +248,14 @@ button:hover,
 .table-wrapper
 {
 	margin: auto -200px 0;
+	padding-top: 50px;
+	
 }
 
 .table{
 	width:100%;
 	border-collapse:collapse;
-	background:white
+	background:white;
 }
 
 .table th,.table td{

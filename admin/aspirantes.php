@@ -157,8 +157,7 @@
 	<div class="container">
 		<h1>Aspirantes</h1>
 
-		<div class="card">
-
+		<div class="cardAspirantes" style="align-items: normal !important;">
 			<form method="get" class="grid">
 				<div>
 					<label>Folio</label>
@@ -236,7 +235,7 @@
 					<th><?=sort_link('Edad', 'edad', $sort, $dir)?></th>
 					<th><?=sort_link('Programa', 'programa', $sort, $dir)?></th>
 					<th><?=sort_link('Acceso', 'autorizado', $sort, $dir)?></th>
-					<th><?=sort_link('Examen acabado', 'terminado', $sort, $dir)?></th>
+					<th><?=sort_link('Fin Test', 'terminado', $sort, $dir)?></th>
 					<th><?=sort_link('Fecha inicio', 'fecha', $sort, $dir)?></th>
 					<th><?=sort_link('Hora inicio', 'hora', $sort, $dir)?></th>
 					<th><?=sort_link('Entrevista', 'entrevista', $sort, $dir)?></th>
@@ -269,7 +268,7 @@
 									type="datetime-local" 
 									name="entrevista_at"
 									value="<?=!empty($a['entrevista_at']) ? h(date('Y-m-d\TH:i', strtotime($a['entrevista_at']))) : ''?>">
-								<button type="submit" name="guardar_entrevista" value="1">Guardar</button>
+								<button type="submit" name="guardar_entrevista" value="1">💾</button>
 							</form>
 						</td>
 						<td><?=$a['intentos_post_finalizacion']?></td>
@@ -281,35 +280,39 @@
 						    <?=!empty($a['entrevista_correo_enviado_at']) ? h(date('d/m/Y H:i', strtotime($a['entrevista_correo_enviado_at']))) : '—'?>
 						</td>
 						<td class="actions">
-							<a class="btn secondary" href="aspirante_form.php?id=<?=$a['id']?>">Editar</a>
+							<a class="btn secondary" href="aspirante_form.php?id=<?=$a['id']?>">🖊</a>
 							<!--<a class="btn danger" onclick="return confirm('¿Eliminar?')" href="aspirantes.php?del=<?=$a['id']?>">Eliminar</a>-->
 							<form method="post" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
 								<?=csrf_field()?>
 							    <input type="hidden" name="del" value="<?=$a['id']?>">
-							    <button class="btn danger">Eliminar</button>
+							    <button class="btn danger">🗑</button>
 							</form>
 							<br>
 							<?php if(empty($a['examen_correo_enviado_at'])): ?>
-							    <a class="btn secondary"
+							    <a class="btn secondary correo"
 							       href="correo.php?id=<?=$a['id']?>&tipo=examen">
-							        ✉ examen
+							        ✉<br>
+							        examen
 							    </a>
 							<?php else: ?>
-							    <button class="btn secondary"
+							    <button class="btn secondary correo"
 							            onclick="alert('Correo de examen ya fue preparado/enviado. Revisar tabla.')">
-							        ✉ examen
+							        ✉<br>
+							        examen
 							    </button>
 							<?php endif; ?>
 
 							<?php if(empty($a['entrevista_correo_enviado_at'])): ?>
-							    <a class="btn secondary"
+							    <a class="btn secondary correo"
 							       href="correo.php?id=<?=$a['id']?>&tipo=entrevista">
-							        ✉ entrevista
+							        ✉<br>
+							        entrevista
 							    </a>
 							<?php else: ?>
-							    <button class="btn secondary"
+							    <button class="btn secondary correo"
 							            onclick="alert('Correo de entrevista ya fue preparado/enviado. Revisar tabla.')">
-							        ✉ entrevista
+							        ✉<br>
+							        entrevista
 							    </button>
 							<?php endif; ?>
 						</td>

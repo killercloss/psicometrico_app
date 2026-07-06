@@ -106,7 +106,7 @@ $rows = $pdo->query('
             </form>
         </div>
 
-        <div class="card2">
+        <div class="cardBanco">
             <h2>Banco actual</h2>
             <div class="table-wrapper">
                 <table class="table">
