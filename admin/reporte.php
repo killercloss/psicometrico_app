@@ -299,12 +299,14 @@
 			</div>
 			
 			<a class="btn" href="imprimir_pdf.php?id=<?=$r['id']?>" target="_blank">
-				Descargar como PDF
+				Reporte resumido PDF
 			</a>
 
 			<a class="btn secondary" href="exportar_excel.php?id=<?=$r['id']?>">
 				Descargar Excel
 			</a>
+
+			<a class="btn" href="imprimir_pdf_completo.php?id=<?=$r['resultado_id']?>" target="_blank">Reporte completo PDF</a>
 		</div>
 	</body>
 </html>
