@@ -53,16 +53,27 @@
     }
 
     if($tipo === 'entrevista'){
-
-        /*if(!empty($a['entrevista_correo_enviado_at'])){
-            echo "<script>alert('Correo de entrevista ya fue preparado/enviado. Revisar tabla.'); window.location='aspirantes.php';</script>";
-            exit;
-        }*/
-
+        if($a['terminado'] != 1)
+        {
+            $pdo->prepare('UPDATE aspirantes SET autorizado = 0 WHERE id=?')
+            ->execute([$id]);
         $pdo->prepare('UPDATE aspirantes SET entrevista_correo_enviado_at = NOW() WHERE id=?')
             ->execute([$id]);
 
         $url = mailto_entrevista($a);
+        }
+        /*if(!empty($a['entrevista_correo_enviado_at'])){
+            echo "<script>alert('Correo de entrevista ya fue preparado/enviado. Revisar tabla.'); window.location='aspirantes.php';</script>";
+            exit;
+        }*/
+        else
+        {
+            echo "<script>
+                alert('Aspirante aún no inicia o termina su prueba, espera a que termine para notificarle sobre su entrevista');
+                window.location='aspirantes.php';
+                </script>";
+                exit;
+        }
 ?>
 
 <!doctype html>

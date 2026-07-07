@@ -7,28 +7,29 @@
     if($_SERVER['REQUEST_METHOD'] === 'POST')
     {
         csrf_check();
-        $folio = trim($_POST['folio']??''); 
+        //$folio = trim($_POST['folio']??''); 
+        $correo = trim($_POST['correo']);
         $codigo = trim($_POST['codigo']??'');
-        $st = $pdo->prepare('SELECT * FROM aspirantes WHERE folio_ceneval=? LIMIT 1');
-        $st->execute([$folio]); 
+        $st = $pdo->prepare('SELECT * FROM aspirantes WHERE correo=? LIMIT 1');
+        $st->execute([$correo]); 
         $a = $st->fetch();
         if(!$a)
             { 
-                $msg='Folio o código incorrecto.'; 
+                $msg='Correo o código incorrecto'; 
             }
         elseif(!password_verify($codigo, $a['codigo_acceso']))
             {
-                $msg = 'Folio o código incorrecto.';
+                $msg = 'Correo o código incorrecto.';
             }
         elseif(!$a['autorizado'])
             { 
-                $msg='Este aspirante no está autorizado para presentar la prueba.'; 
+                $msg='Este aspirante ya ha presentado la prueba. Revisa tu correo para verificar tu fecha de entrevista.'; 
             }
         elseif($a['terminado'])
             {
                 $pdo->prepare('UPDATE aspirantes SET intentos_post_finalizacion=intentos_post_finalizacion+1 WHERE id=?')->execute([$a['id']]);
                 $st=$pdo->prepare('SELECT intentos_post_finalizacion FROM aspirantes WHERE id=?'); $st->execute([$a['id']]); $n=$st->fetchColumn();
-                $msg='La prueba ya fue finalizada. Intentos de ingreso posteriores a la finalización: '.$n.'.';
+                $msg='La prueba ya fue finalizada. Espera tu fecha de entrevista y presta atención al correo que proporcionaste durante tu registro.';
             } 
         elseif(!empty($a['inicio_examen_at']))
             {
@@ -96,8 +97,8 @@
                 ?>
                 <form method="post">
                     <?=csrf_field()?>
-                    <label>Folio CENEVAL</label>
-                    <input class="loginInput" name="folio" required>
+                    <label>Correo registrado</label>
+                    <input class="loginInput" name="correo" required>
                     <label>Código de acceso</label>
                     <input class="loginInput" type="password" name="codigo" required>
                     <br>

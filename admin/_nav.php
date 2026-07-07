@@ -9,7 +9,7 @@
 	<a class="<?= $pagina=='programas.php' ? 'active' : '' ?>" href="programas.php" title="Lista de maestrías y doctorados">Programas</a>
 	<a class="<?= $pagina=='dimensiones.php' ? 'active' : '' ?>" href="dimensiones.php" title="Dimensiones de psicométrico">Dimensiones</a>
 	<a class="<?= $pagina=='preguntas.php' ? 'active' : '' ?>" href="preguntas.php" title="Lista de preguntas para psicométrico">Preguntas de test</a>
-	<a class="<?= $pagina=='entrevista_banco.php' ? 'active' : '' ?>" href="entrevista_banco.php">Preguntas de entrevista</a>
+	<a class="<?= $pagina=='entrevista_banco.php' ? 'active' : '' ?>" href="entrevista_banco.php" title="Ver preguntas para entrevista">Preguntas de entrevista</a>
 	<a class="<?= $pagina=='reportes.php' ? 'active' : '' ?>" href="reportes.php" title="Generar reportes">Reportes</a>
 	<a class="<?= $pagina=='respuestas_examen.php' ? 'active' : '' ?>" href="respuestas_examen.php" title="Ver reporte de respuestas">Respuestas por aspirante</a>
 	<a href="exportar_csv.php" title="Exportar pantalla en CSV">CSV</a>
